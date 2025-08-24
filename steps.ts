@@ -1,18 +1,19 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { Browser, Page, chromium } from 'playwright';
+
 import { expect } from '@playwright/test';
 
 let browser: Browser;
 let page: Page;
 
-Given('I am on the SauceDemo login page', async () => {
+Given('SauceDemo login page Check', async () => {
   browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
   page = await context.newPage();
   await page.goto('https://www.saucedemo.com/');
 });
 
-When('I login with username {string} and password {string}', async (username, password) => {
+When('login Check with username {string} and password {string}', async (username, password) => {
   await page.fill('[data-test="username"]', username);
   await page.fill('[data-test="password"]', password);
   await page.click('[data-test="login-button"]');
@@ -24,10 +25,10 @@ Then('I should be redirected to the inventory page', async () => {
   await browser.close();
 });
 
-Then('I should see an error message', async () => {
+Then('should see the error message', async () => {
   const error = await page.locator('[data-test="error"]');
   await expect(error).toBeVisible();
-  await expect(error).toContainText('Username and password do not match'); // Flexible match
+  await expect(error).toContainText('Username and password do not match');
   await browser.close();
 });
 
@@ -60,7 +61,7 @@ Given('I am logged into SauceDemo', async () => {
 When('I sort the products by {string}', async (option) => {
   await page.selectOption('[data-test="product_sort_container"]', { label: option });
 });
-
+// alphabetical products
 Then('the products should be displayed in alphabetical order', async () => {
   const productNames = await page.$$eval('.inventory_item_name', items =>
     items.map(item => item.textContent?.trim() || '')
@@ -70,7 +71,8 @@ Then('the products should be displayed in alphabetical order', async () => {
   await browser.close();
 });
 
-Then('the products should be displayed in ascending order of price', async () => {
+// Ascending Order products
+Then('should be displayed in ascending order of price', async () => {
   const prices = await page.$$eval('.inventory_item_price', items =>
     items.map(item => parseFloat(item.textContent?.replace('$', '') || '0'))
   );
